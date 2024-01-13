@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 class AudioRecord:
-    def __init__(self, buffer_size=1024, sample_rate=16384):
+    def __init__(self, buffer_size=1024, sample_rate=44000):
         self.buffer_size = buffer_size
         self.sample_rate = sample_rate
         self.data = []
@@ -93,8 +93,8 @@ if __name__ == "__main__":
         top_indices = np.argsort(magnitude_spectrum)[::-1]
         top_frequencies = positive_frequencies[top_indices]
 
-        # Filtering frequencies below 335 Hz
-        top_frequencies = [freq for freq in top_frequencies if (335 >= freq >= 80)]
+        # Filtering frequencies below 375 Hz
+        top_frequencies = [freq for freq in top_frequencies if (375 >= freq >= 77)]
 
         filtered_frequencies = [top_frequencies[0]]
 
