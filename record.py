@@ -37,7 +37,7 @@ class AudioRecord:
         print("Recording stopped.")
 
 
-# Applying Hamming window to the signal samples
+#Nalozenie okna hamminga na sygnal
 def hammingWindow(data, size):
     hamming_window = np.hamming(size)
     result = data * hamming_window
@@ -53,26 +53,26 @@ if __name__ == "__main__":
     samples_signal = np.array(audio_recorder.data)
 
     for i in range(len(samples_signal)):
-        if samples_signal[i] < 1500:
+        if samples_signal[i] < 2000:
             samples_signal[i] = 0
 
 
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
-    plt.title('Recorded Audio Signal')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
-    plt.show()
+    # plt.figure(figsize=(10, 6))
+    # plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
+    # plt.title('Recorded Audio Signal')
+    # plt.xlabel('Time (s)')
+    # plt.ylabel('Amplitude')
+    # plt.show()
 
     samples_signal = hammingWindow(samples_signal, len(samples_signal))
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
-    plt.title('Recorded Audio Signal with Hamming Window')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
-    plt.show()
+    # plt.figure(figsize=(10, 6))
+    # plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
+    # plt.title('Recorded Audio Signal with Hamming Window')
+    # plt.xlabel('Time (s)')
+    # plt.ylabel('Amplitude')
+    # plt.show()
 
     # FFT of the Signal
     def plot_fft(signal, sample_rate):
@@ -82,12 +82,12 @@ if __name__ == "__main__":
         positive_frequencies = frequencies[:len(frequencies) // 2]
         magnitude_spectrum = np.abs(fft_result[:len(fft_result) // 2])
 
-        plt.figure(figsize=(10, 6))
-        plt.plot(positive_frequencies, magnitude_spectrum)
-        plt.title('FFT of the Signal')
-        plt.xlabel('Frequency (Hz)')
-        plt.ylabel('Amplitude')
-        plt.show()
+        # plt.figure(figsize=(10, 6))
+        # plt.plot(positive_frequencies, magnitude_spectrum)
+        # plt.title('FFT of the Signal')
+        # plt.xlabel('Frequency (Hz)')
+        # plt.ylabel('Amplitude')
+        # plt.show()
 
         # Sorting frequencies by amplitude from highest to lowest
         top_indices = np.argsort(magnitude_spectrum)[::-1]
@@ -101,13 +101,42 @@ if __name__ == "__main__":
         for freq in top_frequencies[1:]:
             if_add = True
             for i in range(len(filtered_frequencies)):
-                if abs(filtered_frequencies[i] - freq) <= 25:
+                if abs(filtered_frequencies[i] - freq) <= 5:
                     if_add = False
             if if_add:
                 filtered_frequencies.append(freq)
                 if len(filtered_frequencies) == 6:
                     break
 
-        print(filtered_frequencies)
+        return filtered_frequencies
 
-    plot_fft(samples_signal, audio_recorder.sample_rate)
+    def recognize_chord(filtered_frequences):
+        with open("database.txt", "r") as file:
+            list_of_complient = []
+            numer_of_compliant = 0
+            content = file.read()
+            chords = content.split("\n")
+            for i in range(len(chords)):
+                chords[i] = chords[i].split(",")
+
+            for chord in chords:
+                for freq in filtered_frequences:
+                    for c in chord[1:]:
+                        if math.fabs(float(c)-freq)<4:
+                            numer_of_compliant += 1
+
+                list_of_complient.append(numer_of_compliant)
+                numer_of_compliant = 0
+            print(list_of_complient)
+            print(chords)
+
+            max = list_of_complient[0]
+            index = 0
+            for n in list_of_complient:
+                if n > max:
+                    max = n
+                    index = list_of_complient.index(n)
+            print(chords[index][0])
+
+
+    recognize_chord(plot_fft(samples_signal, audio_recorder.sample_rate))
