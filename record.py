@@ -1,8 +1,8 @@
 import math
-import pyaudio
 import numpy as np
-from scipy.fft import fft
+import pyaudio
 import matplotlib.pyplot as plt
+
 
 class AudioRecord:
     def __init__(self, buffer_size=1024, sample_rate=16384):
@@ -16,7 +16,7 @@ class AudioRecord:
     def _callback(self, in_data, frame_count, time_info, status):
         audio_data = np.frombuffer(in_data, dtype=np.int16)
         self.data.extend(audio_data)
-        return (in_data, pyaudio.paContinue)
+        return in_data, pyaudio.paContinue
 
     def start_recording(self):
         self.is_recording = True
@@ -37,22 +37,11 @@ class AudioRecord:
         print("Recording stopped.")
 
 
-def hammingWindow(data, size, j):
-    result = []
-    for i in range(j * size, (j + 1) * size):
-        result.append(data[i] * 0.5 * (1.0 - math.cos(2.0 * math.pi * i / (size - 1))))
+# Applying Hamming window to the signal samples
+def hammingWindow(data, size):
+    hamming_window = np.hamming(size)
+    result = data * hamming_window
     return result
-
-
-def find_max_frequency(signal_samples, sample_rate):
-    fft_result = fft(signal_samples)
-    frequencies = np.fft.fftfreq(len(fft_result), d=1 / sample_rate)
-    print(frequencies)
-    positive_frequencies = frequencies[:len(frequencies) // 2]
-    max_amplitude_index = np.argmax(np.abs(fft_result[:len(fft_result) // 2]))
-    print(max_amplitude_index)
-    max_frequency = positive_frequencies[max_amplitude_index]
-    return abs(max_frequency)
 
 
 if __name__ == "__main__":
@@ -61,40 +50,64 @@ if __name__ == "__main__":
     input("Press Enter to stop recording...")
     audio_recorder.stop_recording()
 
-    for i in range(len(audio_recorder.data)):
-        audio_recorder.data[i] = abs(audio_recorder.data[i])
+    samples_signal = np.array(audio_recorder.data)
 
-    for i in range(len(audio_recorder.data)):
-        if audio_recorder.data[i] < 100:
-            audio_recorder.data[i] = 0
+    for i in range(len(samples_signal)):
+        if samples_signal[i] < 1500:
+            samples_signal[i] = 0
 
-    print("Recorded samples:", audio_recorder.data)
 
-    size_hamming = 4096
-    new_data = hammingWindow(audio_recorder.data, size_hamming, 0)
 
-    max_frequency = find_max_frequency(new_data, 4096)
-    print("Max Frequency:", max_frequency)
-
-    # Wykres FFT
     plt.figure(figsize=(10, 6))
-    plt.plot(np.fft.fftfreq(size_hamming, d=1 / audio_recorder.sample_rate)[:size_hamming // 2],
-             np.abs(fft(new_data))[:size_hamming // 2])
-    plt.title('FFT of the Audio Signal')
-    plt.xlabel('Frequency (Hz)')
-    plt.ylabel('Amplitude')
-    plt.show()
-
-    # Wczytaj dane audio
-    audio_samples = audio_recorder.data
-
-    # Stworzenie wektora czasu dla próbek audio
-    time_vector = np.arange(0, len(audio_samples)) / audio_recorder.sample_rate
-
-    # Wykres amplitudy próbek
-    plt.figure(figsize=(10, 6))
-    plt.plot(time_vector, audio_samples)
-    plt.title('Amplitude of Audio Samples')
+    plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
+    plt.title('Recorded Audio Signal')
     plt.xlabel('Time (s)')
     plt.ylabel('Amplitude')
     plt.show()
+
+    samples_signal = hammingWindow(samples_signal, len(samples_signal))
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
+    plt.title('Recorded Audio Signal with Hamming Window')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Amplitude')
+    plt.show()
+
+    # FFT of the Signal
+    def plot_fft(signal, sample_rate):
+        fft_result = np.fft.fft(signal)
+        frequencies = np.fft.fftfreq(len(fft_result), d=1 / sample_rate)
+
+        positive_frequencies = frequencies[:len(frequencies) // 2]
+        magnitude_spectrum = np.abs(fft_result[:len(fft_result) // 2])
+
+        plt.figure(figsize=(10, 6))
+        plt.plot(positive_frequencies, magnitude_spectrum)
+        plt.title('FFT of the Signal')
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Amplitude')
+        plt.show()
+
+        # Sorting frequencies by amplitude from highest to lowest
+        top_indices = np.argsort(magnitude_spectrum)[::-1]
+        top_frequencies = positive_frequencies[top_indices]
+
+        # Filtering frequencies below 335 Hz
+        top_frequencies = [freq for freq in top_frequencies if (335 >= freq >= 80)]
+
+        filtered_frequencies = [top_frequencies[0]]
+
+        for freq in top_frequencies[1:]:
+            if_add = True
+            for i in range(len(filtered_frequencies)):
+                if abs(filtered_frequencies[i] - freq) <= 25:
+                    if_add = False
+            if if_add:
+                filtered_frequencies.append(freq)
+                if len(filtered_frequencies) == 6:
+                    break
+
+        print(filtered_frequencies)
+
+    plot_fft(samples_signal, audio_recorder.sample_rate)
