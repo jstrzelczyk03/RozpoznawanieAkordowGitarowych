@@ -21,7 +21,7 @@ class AudioRecord:
     def start_recording(self):
         self.is_recording = True
         print("Recording started...")
-        self.data = []  # Clear previous data
+        self.data = []
         self.stream = self.p.open(format=pyaudio.paInt16,
                                   channels=1,
                                   rate=self.sample_rate,
@@ -37,7 +37,7 @@ class AudioRecord:
         print("Recording stopped.")
 
 
-#Nalozenie okna hamminga na sygnal
+# Nalozenie okna hamminga na sygnal
 def hammingWindow(data, size):
     hamming_window = np.hamming(size)
     result = data * hamming_window
@@ -52,28 +52,42 @@ if __name__ == "__main__":
 
     samples_signal = np.array(audio_recorder.data)
 
+    plt.figure(figsize=(10, 6))
+    plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
+    plt.title('Recorded Audio Signal')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Amplitude')
+    plt.show()
+
     for i in range(len(samples_signal)):
-        if samples_signal[i] < 2000:
+        if math.fabs(samples_signal[i]) < 500:
             samples_signal[i] = 0
 
-
-
-    # plt.figure(figsize=(10, 6))
-    # plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
-    # plt.title('Recorded Audio Signal')
-    # plt.xlabel('Time (s)')
-    # plt.ylabel('Amplitude')
-    # plt.show()
+    plt.figure(figsize=(10, 6))
+    plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
+    plt.title('Recorded Audio Signal')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Amplitude')
+    plt.show()
 
     samples_signal = hammingWindow(samples_signal, len(samples_signal))
 
-    # plt.figure(figsize=(10, 6))
-    # plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
-    # plt.title('Recorded Audio Signal with Hamming Window')
-    # plt.xlabel('Time (s)')
-    # plt.ylabel('Amplitude')
-    # plt.show()
+    plt.figure(figsize=(10, 6))
+    plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
+    plt.title('Recorded Audio Signal')
+    plt.xlabel('Time (s)')
+    plt.ylabel('Amplitude')
+    plt.show()
 
+
+    #
+    # # plt.figure(figsize=(10, 6))
+    # # plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
+    # # plt.title('Recorded Audio Signal with Hamming Window')
+    # # plt.xlabel('Time (s)')
+    # # plt.ylabel('Amplitude')
+    # # plt.show()
+    #
     # FFT of the Signal
     def plot_fft(signal, sample_rate):
         fft_result = np.fft.fft(signal)
@@ -82,34 +96,36 @@ if __name__ == "__main__":
         positive_frequencies = frequencies[:len(frequencies) // 2]
         magnitude_spectrum = np.abs(fft_result[:len(fft_result) // 2])
 
-        # plt.figure(figsize=(10, 6))
-        # plt.plot(positive_frequencies, magnitude_spectrum)
-        # plt.title('FFT of the Signal')
-        # plt.xlabel('Frequency (Hz)')
-        # plt.ylabel('Amplitude')
-        # plt.show()
+        plt.figure(figsize=(10, 6))
+        plt.plot(positive_frequencies, magnitude_spectrum)
+        plt.title('FFT of the Signal')
+        plt.xlabel('Frequency (Hz)')
+        plt.ylabel('Amplitude')
+        plt.show()
 
         # Sorting frequencies by amplitude from highest to lowest
         top_indices = np.argsort(magnitude_spectrum)[::-1]
         top_frequencies = positive_frequencies[top_indices]
 
         # Filtering frequencies below 375 Hz
-        top_frequencies = [freq for freq in top_frequencies if (375 >= freq >= 77)]
+        top_frequencies = [freq for freq in top_frequencies if (375 >= freq >= 70)]
 
         filtered_frequencies = [top_frequencies[0]]
 
         for freq in top_frequencies[1:]:
             if_add = True
             for i in range(len(filtered_frequencies)):
-                if abs(filtered_frequencies[i] - freq) <= 5:
+                if abs(filtered_frequencies[i] - freq) <= 20:
                     if_add = False
             if if_add:
                 filtered_frequencies.append(freq)
                 if len(filtered_frequencies) == 6:
                     break
-
+        print(filtered_frequencies)
         return filtered_frequencies
 
+
+    #
     def recognize_chord(filtered_frequences):
         with open("database.txt", "r") as file:
             list_of_complient = []
@@ -122,7 +138,7 @@ if __name__ == "__main__":
             for chord in chords:
                 for freq in filtered_frequences:
                     for c in chord[1:]:
-                        if math.fabs(float(c)-freq)<4:
+                        if math.fabs(float(c) - freq) < 4:
                             numer_of_compliant += 1
 
                 list_of_complient.append(numer_of_compliant)
