@@ -121,7 +121,7 @@ if __name__ == "__main__":
                 filtered_frequencies.append(freq)
                 if len(filtered_frequencies) == 6:
                     break
-        print(filtered_frequencies)
+        print(f"\nZnalezione częstotliwości: {filtered_frequencies}")
         return filtered_frequencies
 
 
@@ -143,8 +143,8 @@ if __name__ == "__main__":
 
                 list_of_complient.append(numer_of_compliant)
                 numer_of_compliant = 0
-            print(list_of_complient)
-            print(chords)
+            # print(list_of_complient)
+            # print(chords)
 
             max = list_of_complient[0]
             index = 0
@@ -152,7 +152,7 @@ if __name__ == "__main__":
                 if n > max:
                     max = n
                     index = list_of_complient.index(n)
-            print(chords[index][0])
+            print(f"Znaleziony akord {chords[index][0]}")
 
 
     recognize_chord(plot_fft(samples_signal, audio_recorder.sample_rate))
