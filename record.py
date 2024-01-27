@@ -1,4 +1,6 @@
 import math
+import time
+
 import numpy as np
 import pyaudio
 import matplotlib.pyplot as plt
@@ -52,32 +54,38 @@ if __name__ == "__main__":
 
     samples_signal = np.array(audio_recorder.data)
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
-    plt.title('Recorded Audio Signal')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
-    plt.show()
+    # plt.figure(figsize=(10, 6))
+    # plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
+    # plt.title('Recorded Audio Signal')
+    # plt.xlabel('Time (s)')
+    # plt.ylabel('Amplitude')
+    # plt.show()
+
+    start_time = time.time()
 
     for i in range(len(samples_signal)):
         if math.fabs(samples_signal[i]) < 500:
             samples_signal[i] = 0
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
-    plt.title('Recorded Audio Signal')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
-    plt.show()
+    removing_noise_time = time.time() - start_time
 
+    # plt.figure(figsize=(10, 6))
+    # plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
+    # plt.title('Recorded Audio Signal')
+    # plt.xlabel('Time (s)')
+    # plt.ylabel('Amplitude')
+    # plt.show()
+
+    start_time = time.time()
     samples_signal = hammingWindow(samples_signal, len(samples_signal))
+    hamming_time = time.time() - start_time
 
-    plt.figure(figsize=(10, 6))
-    plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
-    plt.title('Recorded Audio Signal')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
-    plt.show()
+    # plt.figure(figsize=(10, 6))
+    # plt.plot(np.arange(len(samples_signal)) / audio_recorder.sample_rate, samples_signal)
+    # plt.title('Recorded Audio Signal')
+    # plt.xlabel('Time (s)')
+    # plt.ylabel('Amplitude')
+    # plt.show()
 
 
     #
@@ -96,12 +104,12 @@ if __name__ == "__main__":
         positive_frequencies = frequencies[:len(frequencies) // 2]
         magnitude_spectrum = np.abs(fft_result[:len(fft_result) // 2])
 
-        plt.figure(figsize=(10, 6))
-        plt.plot(positive_frequencies, magnitude_spectrum)
-        plt.title('FFT of the Signal')
-        plt.xlabel('Frequency (Hz)')
-        plt.ylabel('Amplitude')
-        plt.show()
+        # plt.figure(figsize=(10, 6))
+        # plt.plot(positive_frequencies, magnitude_spectrum)
+        # plt.title('FFT of the Signal')
+        # plt.xlabel('Frequency (Hz)')
+        # plt.ylabel('Amplitude')
+        # plt.show()
 
         # Sorting frequencies by amplitude from highest to lowest
         top_indices = np.argsort(magnitude_spectrum)[::-1]
@@ -154,5 +162,10 @@ if __name__ == "__main__":
                     index = list_of_complient.index(n)
             print(f"Znaleziony akord {chords[index][0]}")
 
-
+    start_time = time.time()
     recognize_chord(plot_fft(samples_signal, audio_recorder.sample_rate))
+    recognizing_time = time.time() - start_time
+
+    print(f"Czas usunięcia szumu w sekundach: {removing_noise_time}")
+    print(f"Czas nałożenia okna Hamminga w sekundach: {hamming_time}")
+    print(f"Czas rozpoznania akordu w sekundach: {recognizing_time}")
