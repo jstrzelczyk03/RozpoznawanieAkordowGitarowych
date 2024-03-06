@@ -38,40 +38,40 @@ def calculate_pcp(audio_data, sr):
     return pcp
 
 
-def save_pcp(dataset_path, json_path):
-    # Dictionary to store data
-    data = {
-        "mapping": [],
-        "pcp": [],
-        "labels": []
-    }
+# def save_pcp(dataset_path, json_path):
+#     # Dictionary to store data
+#     data = {
+#         "mapping": [],
+#         "pcp": [],
+#         "labels": []
+#     }
+#
+#     # Loop through all
+#     for i, (dirpath, dirnames, filenames) in enumerate(os.walk(dataset_path)):
+#
+#         # Ensure that we are not at the root (dataset) level
+#         if dirpath is not dataset_path:
+#
+#             # Save the semantic label
+#             semantic_label = dirpath.split("\\")[-1]  # Changed backslash to forward slash for compatibility
+#             data["mapping"].append(semantic_label)
+#             print("\nProcessing {}".format(semantic_label))
+#
+#             # Process files for a specific chord
+#             for f in filenames:
+#                 # Load audio file
+#                 file_path = os.path.join(dirpath, f)
+#
+#                 pcp = calculate_pcp(file_path)
+#
+#
+#                 data["pcp"].append(pcp.tolist())
+#                 data["labels"].append(i - 1)
+#
+#     with open(json_path, "w") as file:
+#         json.dump(data, file, indent=4)
+#
+#
+# save_pcp(dataset_path=DATASET_PATH, json_path=JSON_PATH)
 
-    # Loop through all
-    for i, (dirpath, dirnames, filenames) in enumerate(os.walk(dataset_path)):
-
-        # Ensure that we are not at the root (dataset) level
-        if dirpath is not dataset_path:
-
-            # Save the semantic label
-            semantic_label = dirpath.split("\\")[-1]  # Changed backslash to forward slash for compatibility
-            data["mapping"].append(semantic_label)
-            print("\nProcessing {}".format(semantic_label))
-
-            # Process files for a specific chord
-            for f in filenames:
-                # Load audio file
-                file_path = os.path.join(dirpath, f)
-
-                pcp = calculate_pcp(file_path)
-
-
-                data["pcp"].append(pcp.tolist())
-                data["labels"].append(i - 1)
-
-    with open(json_path, "w") as file:
-        json.dump(data, file, indent=4)
-
-
-save_pcp(dataset_path=DATASET_PATH, json_path=JSON_PATH)
-
-calculate_pcp("Resources/Chords/a/a1.wav")
+# calculate_pcp("Resources/Chords/a/a1.wav")
