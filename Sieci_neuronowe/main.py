@@ -4,6 +4,9 @@ import json
 from tensorflow.keras.models import load_model
 from preprocess import calculate_pcp
 
+
+chord_label = None
+
 # Import the trained model (Update the MODEL_PATH to the location of your Keras model)
 MODEL_PATH = "model.h5"
 model = load_model(MODEL_PATH)
@@ -13,7 +16,8 @@ DATA_PATH = "data.json"
 with open(DATA_PATH, "r") as file:
     data = json.load(file)
 
-chord_label = None
+
+# chord_label = None
 
 def classify_buffer(buffer, rate):
     global chord_label
@@ -28,17 +32,18 @@ def classify_buffer(buffer, rate):
     predictions = model.predict(pcp)
     new_chord_label = np.argmax(predictions)
     confidence = np.max(predictions)
-    if confidence >= 0.9:
-        if new_chord_label == chord_label:
-            print(f"Identified chord: {data['mapping'][new_chord_label]} with confidence: {confidence}")
-        chord_label = new_chord_label
+    if confidence >= 0.985 and new_chord_label != 10:
+        # if new_chord_label == chord_label:
+        print(f"Identified chord: {data['mapping'][new_chord_label]} with confidence: {confidence}")
+        # chord_label = new_chord_label
+
 
 def record_and_classify():
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 44100
-    CHUNK = 22050  # Adjusted for more frequent predictions
-    RECORD_SECONDS = 10  # Reduced for quicker testing
+    CHUNK = 8192  # Adjusted for more frequent predictions
+    RECORD_SECONDS = 50  # Reduced for quicker testing
 
     p = pyaudio.PyAudio()
 
@@ -58,6 +63,7 @@ def record_and_classify():
     stream.stop_stream()
     stream.close()
     p.terminate()
+
 
 if __name__ == "__main__":
     input("Press Enter to start recording...")
