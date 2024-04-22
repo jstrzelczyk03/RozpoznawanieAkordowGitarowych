@@ -8,6 +8,7 @@ from preprocess import calculate_pcp
 chord_label = None
 
 # Import the trained model (Update the MODEL_PATH to the location of your Keras model)
+
 MODEL_PATH = "model.h5"
 model = load_model(MODEL_PATH)
 
@@ -32,18 +33,32 @@ def classify_buffer(buffer, rate):
     predictions = model.predict(pcp)
     new_chord_label = np.argmax(predictions)
     confidence = np.max(predictions)
-    if confidence >= 0.985 and new_chord_label != 10:
+    if confidence >= 0.95 and new_chord_label != 20:
         # if new_chord_label == chord_label:
         print(f"Identified chord: {data['mapping'][new_chord_label]} with confidence: {confidence}")
         # chord_label = new_chord_label
 
+def list_microphones():
+    p = pyaudio.PyAudio()
+    info = p.get_host_api_info_by_index(0)
+    numdevices = info.get('deviceCount')
+    for i in range(0, numdevices):
+        if (p.get_device_info_by_index(i).get('maxInputChannels')) > 0:
+            print("Input Device id ", i, " - ", p.get_device_info_by_index(i).get('name'))
 
-def record_and_classify():
+    p.terminate()
+
+def select_microphone():
+    list_microphones()
+    index = int(input("Wybierz indeks urządzenia do używania: "))
+    return index
+
+def record_and_classify(mic_index):
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 44100
-    CHUNK = 8192  # Adjusted for more frequent predictions
-    RECORD_SECONDS = 50  # Reduced for quicker testing
+    CHUNK = 8192
+    RECORD_SECONDS = 50
 
     p = pyaudio.PyAudio()
 
@@ -51,7 +66,8 @@ def record_and_classify():
                     channels=CHANNELS,
                     rate=RATE,
                     input=True,
-                    frames_per_buffer=CHUNK)
+                    frames_per_buffer=CHUNK,
+                    input_device_index=mic_index)  # Ustawienie wybranego mikrofonu
 
     print("* Recording and classifying...")
     for _ in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
@@ -59,12 +75,43 @@ def record_and_classify():
         classify_buffer(buffer, RATE)
 
     print("* Done.")
-
     stream.stop_stream()
     stream.close()
     p.terminate()
 
-
 if __name__ == "__main__":
+    mic_index = select_microphone()
     input("Press Enter to start recording...")
-    record_and_classify()
+    record_and_classify(mic_index)
+
+
+# def record_and_classify():
+#     FORMAT = pyaudio.paInt16
+#     CHANNELS = 1
+#     RATE = 44100
+#     CHUNK = 8192  # Adjusted for more frequent predictions
+#     RECORD_SECONDS = 50  # Reduced for quicker testing
+#
+#     p = pyaudio.PyAudio()
+#
+#     stream = p.open(format=FORMAT,
+#                     channels=CHANNELS,
+#                     rate=RATE,
+#                     input=True,
+#                     frames_per_buffer=CHUNK)
+#
+#     print("* Recording and classifying...")
+#     for _ in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
+#         buffer = stream.read(CHUNK, exception_on_overflow=False)
+#         classify_buffer(buffer, RATE)
+#
+#     print("* Done.")
+#
+#     stream.stop_stream()
+#     stream.close()
+#     p.terminate()
+
+
+# if __name__ == "__main__":
+#     input("Press Enter to start recording...")
+#     record_and_classify()

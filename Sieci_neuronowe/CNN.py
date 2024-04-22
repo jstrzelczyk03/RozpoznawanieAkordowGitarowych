@@ -63,7 +63,7 @@ def build_model(input_shape):
     model.add(keras.layers.Dense(64, activation='relu'))
 
     # Output layer
-    model.add(keras.layers.Dense(11, activation='softmax'))  # Assuming 10 classes
+    model.add(keras.layers.Dense(21, activation='softmax'))  # Assuming 20 classes
 
     return model
 
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     model.summary()
 
     # Train the model
-    history = model.fit(X_train, y_train, validation_data=(X_validation, y_validation), batch_size=32, epochs=200)
+    history = model.fit(X_train, y_train, validation_data=(X_validation, y_validation), batch_size=32, epochs=400)
 
     # Plot accuracy and loss
     plot_history(history)
