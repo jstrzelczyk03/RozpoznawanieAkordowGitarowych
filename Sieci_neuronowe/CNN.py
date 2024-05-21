@@ -63,7 +63,7 @@ def build_model(input_shape):
     model.add(keras.layers.Dense(64, activation='relu'))
 
     # Output layer
-    model.add(keras.layers.Dense(21, activation='softmax'))  # Assuming 20 classes
+    model.add(keras.layers.Dense(13, activation='softmax'))  # Assuming 20 classes
 
     return model
 
