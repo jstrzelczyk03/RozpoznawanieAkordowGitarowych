@@ -1,0 +1,16 @@
+Instrukcja uruchomienia programu:
+
+Projekt składa się z 3 plików:
+- preprocess.py - służy do wygenerowania odpowiednich zbiorów danych testowych na podstawie plików audio z rozszerzeniem .wav.
+  Pliki powinny być umieszczone w sciezce zdefiniowanej w zmiennej DATASET_PATH. Ponadto musza być one w odpowiedni sposób
+  sklasyfikowane tzn. najpierw umieszczamy je w odpowiednich folderach o nazwach odpowiadajcych akordom, a następnie umieszczamy
+  w lokalizacji zdefiniowanej przez sciezke.
+- CNN.py - plik sluzacy do wytrenowania sieci neuronowej odpowiedzialnej za odpowiednia klasyfikacje akordow.
+- main.py - do uruchomienia aplikacji rozpoznajacej akordy gitarowe.
+
+Kolejność uruchomienia:
+Jesli uzytkownik nie posiada modelu wytrwenowanej sieci neuronowej nalezy urchomic pliki w nastepujacej kolejnosci:
+1) preprocess.py
+2) CNN.py
+3) main.py
+W innym przypadku nalezy uruchomic jedynie plik main.py.
