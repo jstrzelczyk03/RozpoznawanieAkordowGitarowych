@@ -2,13 +2,12 @@ import pyaudio
 import numpy as np
 import json
 from tensorflow.keras.models import load_model
-from preprocess import calculate_pcp
-
+import librosa
+import librosa.feature
 
 chord_label = None
 
 # Import the trained model (Update the MODEL_PATH to the location of your Keras model)
-
 MODEL_PATH = "model.h5"
 model = load_model(MODEL_PATH)
 
@@ -17,8 +16,19 @@ DATA_PATH = "data.json"
 with open(DATA_PATH, "r") as file:
     data = json.load(file)
 
-
 # chord_label = None
+
+def calculate_pcp(audio_data, sr):
+    # Zakładając, że audio_data to już przetworzona tablica NumPy z danymi audio
+    # i sr to częstotliwość próbkowania
+
+    # Bezpośrednie przekazanie danych audio i sr do funkcji librosa
+    chroma = librosa.feature.chroma_stft(y=audio_data, sr=sr)
+
+    chroma_norm = librosa.util.normalize(chroma)
+    pcp = np.mean(chroma_norm, axis=1)
+
+    return pcp
 
 def classify_buffer(buffer, rate):
     global chord_label
@@ -83,35 +93,3 @@ if __name__ == "__main__":
     mic_index = select_microphone()
     input("Press Enter to start recording...")
     record_and_classify(mic_index)
-
-
-# def record_and_classify():
-#     FORMAT = pyaudio.paInt16
-#     CHANNELS = 1
-#     RATE = 44100
-#     CHUNK = 8192  # Adjusted for more frequent predictions
-#     RECORD_SECONDS = 50  # Reduced for quicker testing
-#
-#     p = pyaudio.PyAudio()
-#
-#     stream = p.open(format=FORMAT,
-#                     channels=CHANNELS,
-#                     rate=RATE,
-#                     input=True,
-#                     frames_per_buffer=CHUNK)
-#
-#     print("* Recording and classifying...")
-#     for _ in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-#         buffer = stream.read(CHUNK, exception_on_overflow=False)
-#         classify_buffer(buffer, RATE)
-#
-#     print("* Done.")
-#
-#     stream.stop_stream()
-#     stream.close()
-#     p.terminate()
-
-
-# if __name__ == "__main__":
-#     input("Press Enter to start recording...")
-#     record_and_classify()
