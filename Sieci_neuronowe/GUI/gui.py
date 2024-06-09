@@ -2,8 +2,8 @@ from pathlib import Path
 from tkinter import Tk, Canvas, Button, PhotoImage, Frame
 
 OUTPUT_PATH = Path(__file__).parent
-ASSETS_PATH_FRAME0 = OUTPUT_PATH / Path(r"C:\Users\marci\PycharmProjects\proj_rozpoznawanie_akordow_nowe\Sieci_neuronowe\GUI\assets\frame0")
-ASSETS_PATH_FRAME1 = OUTPUT_PATH / Path(r"C:\Users\marci\PycharmProjects\proj_rozpoznawanie_akordow_nowe\Sieci_neuronowe\GUI\assets\frame1")
+ASSETS_PATH_FRAME0 = OUTPUT_PATH / Path(r"assets\frame0")
+ASSETS_PATH_FRAME1 = OUTPUT_PATH / Path(r"assets\frame1")
 
 def relative_to_assets(path: str, frame: int) -> Path:
     if frame == 0:
@@ -58,7 +58,7 @@ image_3 = canvas0.create_image(
 )
 
 image_image_4 = PhotoImage(
-    file=relative_to_assets("gitara.png", 0))
+    file=relative_to_assets("Gryf_C.png", 0))
 image_4 = canvas0.create_image(
     315.0,
     540.0,
@@ -66,7 +66,7 @@ image_4 = canvas0.create_image(
 )
 
 image_image_5 = PhotoImage(
-    file=relative_to_assets("mikrofon.png", 0))
+    file=relative_to_assets("Mikrofon.png", 0))
 image_5 = canvas0.create_image(
     960.0,
     870.0,
@@ -74,7 +74,7 @@ image_5 = canvas0.create_image(
 )
 
 button_image_1_frame0 = PhotoImage(
-    file=relative_to_assets("button_1.png", 0))
+    file=relative_to_assets("Rozpoznaj_OFF.png", 0))
 button_1_frame0 = Button(
     frame0,
     image=button_image_1_frame0,
@@ -88,14 +88,14 @@ button_1_frame0 = Button(
     activeforeground="gray"
 )
 button_1_frame0.place(
-    x=960.0,
+    x=0.0,
     y=0.0,
     width=960.0,
     height=78.0
 )
 
 button_image_2_frame0 = PhotoImage(
-    file=relative_to_assets("button_2.png", 0))
+    file=relative_to_assets("Zagraj_ON.png", 0))
 button_2_frame0 = Button(
     frame0,
     image=button_image_2_frame0,
@@ -109,7 +109,7 @@ button_2_frame0 = Button(
     activeforeground="black"
 )
 button_2_frame0.place(
-    x=0.0,
+    x=960.0,
     y=0.0,
     width=960.0,
     height=78.0
@@ -149,7 +149,7 @@ button_3.place(
 )
 
 button_image_1_frame1 = PhotoImage(
-    file=relative_to_assets("button_1.png", 1))
+    file=relative_to_assets("Rozpoznaj_ON.png", 1))
 button_1_frame1 = Button(
     frame1,
     image=button_image_1_frame1,
@@ -163,14 +163,14 @@ button_1_frame1 = Button(
     activeforeground="gray"
 )
 button_1_frame1.place(
-    x=960.0,
+    x=0.0,
     y=0.0,
     width=960.0,
     height=78.0
 )
 
 button_image_2_frame1 = PhotoImage(
-    file=relative_to_assets("button_2.png", 1))
+    file=relative_to_assets("Zagraj_OFF.png", 1))
 button_2_frame1 = Button(
     frame1,
     image=button_image_2_frame1,
@@ -184,7 +184,7 @@ button_2_frame1 = Button(
     activeforeground="black"
 )
 button_2_frame1.place(
-    x=0.0,
+    x=960.0,
     y=0.0,
     width=960.0,
     height=78.0
