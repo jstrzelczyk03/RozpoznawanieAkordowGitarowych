@@ -127,26 +127,7 @@ canvas1 = Canvas(
 )
 canvas1.place(x=0, y=0)
 
-button_image_3 = PhotoImage(
-    file=relative_to_assets("button_3.png", 1))
-button_3 = Button(
-    frame1,
-    image=button_image_3,
-    borderwidth=0,
-    highlightthickness=0,
-    command=lambda: print("button_3 clicked"),
-    relief="flat",
-    bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
-    activebackground="#2F2F2F",
-    fg="black",
-    activeforeground="black"
-)
-button_3.place(
-    x=372.0,
-    y=114.0,
-    width=1176.0,
-    height=104.0
-)
+
 
 button_image_1_frame1 = PhotoImage(
     file=relative_to_assets("Rozpoznaj_ON.png", 1))
@@ -190,14 +171,35 @@ button_2_frame1.place(
     height=78.0
 )
 
+button_image_3 = PhotoImage(
+    file=relative_to_assets("Spis_1.png", 1))
+button_3 = Button(
+    frame1,
+    image=button_image_3,
+    borderwidth=0,
+    highlightthickness=0,
+    command=lambda: print("Spis_1 clicked"),
+    relief="flat",
+    bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+    activebackground="#2F2F2F",
+    fg="black",
+    activeforeground="black"
+)
+button_3.place(
+    x=372.0,
+    y=114.0,
+    width=1176.0,
+    height=104.0
+)
+
 button_image_4 = PhotoImage(
-    file=relative_to_assets("button_4.png", 1))
+    file=relative_to_assets("Spis_2.png", 1))
 button_4 = Button(
     frame1,
     image=button_image_4,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_4 clicked"),
+    command=lambda: print("Spis_2 clicked"),
     relief="flat",
     bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
     activebackground="#2F2F2F",
@@ -212,13 +214,13 @@ button_4.place(
 )
 
 button_image_5 = PhotoImage(
-    file=relative_to_assets("button_5.png", 1))
+    file=relative_to_assets("Spis_.png", 1))
 button_5 = Button(
     frame1,
     image=button_image_5,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_5 clicked"),
+    command=lambda: print("Spis_ clicked"),
     relief="flat",
     bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
     activebackground="#2F2F2F",
@@ -233,13 +235,13 @@ button_5.place(
 )
 
 button_image_6 = PhotoImage(
-    file=relative_to_assets("button_6.png", 1))
+    file=relative_to_assets("Spis_.png", 1))
 button_6 = Button(
     frame1,
     image=button_image_6,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_6 clicked"),
+    command=lambda: print("Spis_ clicked"),
     relief="flat",
     bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
     activebackground="#2F2F2F",
@@ -254,13 +256,13 @@ button_6.place(
 )
 
 button_image_7 = PhotoImage(
-    file=relative_to_assets("button_7.png", 1))
+    file=relative_to_assets("Spis_.png", 1))
 button_7 = Button(
     frame1,
     image=button_image_7,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_7 clicked"),
+    command=lambda: print("Spis_ clicked"),
     relief="flat",
     bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
     activebackground="#2F2F2F",
@@ -275,13 +277,13 @@ button_7.place(
 )
 
 button_image_8 = PhotoImage(
-    file=relative_to_assets("button_8.png", 1))
+    file=relative_to_assets("Spis_.png", 1))
 button_8 = Button(
     frame1,
     image=button_image_8,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_8 clicked"),
+    command=lambda: print("Spis_ clicked"),
     relief="flat",
     bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
     activebackground="#2F2F2F",
@@ -296,13 +298,13 @@ button_8.place(
 )
 
 button_image_9 = PhotoImage(
-    file=relative_to_assets("button_9.png", 1))
+    file=relative_to_assets("Spis_.png", 1))
 button_9 = Button(
     frame1,
     image=button_image_9,
     borderwidth=0,
     highlightthickness=0,
-    command=lambda: print("button_9 clicked"),
+    command=lambda: print("Spis_ clicked"),
     relief="flat",
     bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
     activebackground="#2F2F2F",
