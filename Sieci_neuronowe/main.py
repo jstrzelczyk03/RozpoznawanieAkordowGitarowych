@@ -5,6 +5,7 @@ from tensorflow.keras.models import load_model
 import librosa
 import librosa.feature
 import threading
+from queue import Queue
 from Sieci_neuronowe.GUI.gui import update_chord_image, start_gui
 
 chord_label = None
@@ -20,8 +21,7 @@ def calculate_pcp(audio_data, sr):
     pcp = np.mean(chroma_norm, axis=1)
     return pcp
 
-def classify_buffer(buffer, rate):
-    global chord_label
+def classify_buffer(buffer, rate, queue):
     audio_data = np.frombuffer(buffer, dtype=np.int16).astype(np.float32) / np.iinfo(np.int16).max
     pcp = calculate_pcp(audio_data, rate)
     pcp = pcp[np.newaxis, ..., np.newaxis]
@@ -31,7 +31,7 @@ def classify_buffer(buffer, rate):
     if confidence >= 0.97 and new_chord_label != 20:
         chord = data['mapping'][new_chord_label]
         print(f"Identified chord: {chord} with confidence: {confidence}")
-        update_chord_image(chord)
+        queue.put(chord)
 
 def list_microphones():
     p = pyaudio.PyAudio()
@@ -47,7 +47,7 @@ def select_microphone():
     index = int(input("Wybierz indeks urządzenia do używania: "))
     return index
 
-def record_and_classify(mic_index):
+def record_and_classify(mic_index, queue):
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 44100
@@ -63,19 +63,34 @@ def record_and_classify(mic_index):
     print("* Recording and classifying...")
     for _ in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
         buffer = stream.read(CHUNK, exception_on_overflow=False)
-        classify_buffer(buffer, RATE)
+        classify_buffer(buffer, RATE, queue)
     print("* Done.")
     stream.stop_stream()
     stream.close()
     p.terminate()
 
+def process_queue(queue):
+    try:
+        while True:
+            chord = queue.get_nowait()
+            update_chord_image(chord)
+    except Exception as e:
+        pass
+    window.after(100, process_queue, queue)
+
 if __name__ == "__main__":
     mic_index = select_microphone()
     input("Press Enter to start GUI and recording...")
 
+    # Utwórz kolejkę
+    queue = Queue()
+
     # Uruchomienie klasyfikacji w osobnym wątku
-    classify_thread = threading.Thread(target=record_and_classify, args=(mic_index,), daemon=True)
+    classify_thread = threading.Thread(target=record_and_classify, args=(mic_index, queue), daemon=True)
     classify_thread.start()
 
     # Uruchomienie GUI
-    start_gui()
+    global window
+    window = start_gui()
+    window.after(100, process_queue, queue)
+    window.mainloop()

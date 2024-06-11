@@ -822,4 +822,4 @@ def start_gui():
 
     show_frame(frame0)
     window.resizable(False, False)
-    window.mainloop()
+    return window
