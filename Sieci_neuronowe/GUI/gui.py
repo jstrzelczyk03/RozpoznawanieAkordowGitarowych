@@ -68,13 +68,13 @@ def update_chord_image(chord):
     text_image_path = relative_to_assets(text_image_file, 0)
     new_text_image = PhotoImage(file=text_image_path)
     canvas0.itemconfig(image_3_id, image=new_text_image)
-    canvas0.image = new_text_image  # Aktualizacja odniesienia do obrazu, aby zapobiec usunięciu przez garbage collector
+    canvas0.image = new_text_image
 
     gryf_image_file = gryf_images.get(chord, "Gryf.png")
     gryf_image_path = relative_to_assets(gryf_image_file, 0)
     new_gryf_image = PhotoImage(file=gryf_image_path)
     canvas0.itemconfig(image_gryf_id, image=new_gryf_image)
-    canvas0.gryf_image = new_gryf_image  # Aktualizacja odniesienia do obrazu, aby zapobiec usunięciu przez garbage collector
+    canvas0.gryf_image = new_gryf_image
 
 def switch_frame_and_color(target_frame, button_active, button_inactive):
     window.after(100, lambda: show_frame(target_frame))
@@ -86,15 +86,15 @@ def start_gui():
     global button_image_1_frame0, button_image_2_frame0, button_image_1_frame1, button_image_2_frame1, button_image_1_frame2
     global button_image_2_frame2, button_image_1_frame3, button_image_2_frame3, button_image_1_frame4, button_image_2_frame4
     global button_image_1_frame5, button_image_2_frame5, button_image_1_frame6, button_image_2_frame6, button_image_1_frame7
-    global button_image_2_frame7, button_image_1_frame8, button_image_2_frame8
+    global button_image_2_frame7, button_image_1_frame8, button_image_2_frame8, button_microphone_frame0
     global button_image_3, button_image_4, button_image_5, button_image_6, button_image_7, button_image_8, button_image_9
     global image_image_6, image_image_7, image_image_8, image_image_9, image_image_10, image_image_11, image_image_12
 
     window = Tk()
     window.geometry("1920x1080")
-    window.configure(bg="#2F2F2F")  # Ustawienie tła okna na ciemny szary
+    window.configure(bg="#2F2F2F")
 
-    frame0 = Frame(window, bg="#2F2F2F")  # Ustawienie tła ramki na ciemny szary
+    frame0 = Frame(window, bg="#2F2F2F")
     frame1 = Frame(window, bg="#2F2F2F")
     frame2 = Frame(window, bg="#2F2F2F")
     frame3 = Frame(window, bg="#2F2F2F")
@@ -110,7 +110,7 @@ def start_gui():
     # Frame 0 content
     canvas0 = Canvas(
         frame0,
-        bg="#2F2F2F",  # Ustawienie tła canvas na ciemny szary
+        bg="#2F2F2F",
         height=1080,
         width=1920,
         bd=0,
@@ -126,7 +126,6 @@ def start_gui():
         image=image_image_2
     )
 
-    # Tworzenie globalnego image_3_id
     image_image_3 = PhotoImage(file=relative_to_assets("Text.png", 0))
     image_3_id = canvas0.create_image(
         960.0,
@@ -134,7 +133,6 @@ def start_gui():
         image=image_image_3
     )
 
-    # Tworzenie globalnego image_gryf_id
     image_image_gryf = PhotoImage(file=relative_to_assets("Gryf.png", 0))
     image_gryf_id = canvas0.create_image(
         315.0,
@@ -142,11 +140,23 @@ def start_gui():
         image=image_image_gryf
     )
 
-    image_image_5 = PhotoImage(file=relative_to_assets("Mikrofon.png", 0))
-    image_5 = canvas0.create_image(
-        960.0,
-        870.0,
-        image=image_image_5
+    button_microphone_frame0 = PhotoImage(
+        file=relative_to_assets("Mikrofon.png", 0))
+    button_mic_frame0 = Button(
+        frame0,
+        image=button_microphone_frame0,
+        borderwidth=0,
+        highlightthickness=0,
+        #command=,
+        relief="flat",
+        bg="#2F2F2F",
+        activebackground="#2F2F2F",
+        fg="gray",
+        activeforeground="gray"
+    )
+    button_mic_frame0.place(
+        x=880.0,
+        y=750.0,
     )
 
     button_image_1_frame0 = PhotoImage(
@@ -158,7 +168,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame0, button_1_frame0, button_2_frame0),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="gray",
         activeforeground="gray"
@@ -179,7 +189,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame1, button_1_frame0, button_2_frame0),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -194,7 +204,7 @@ def start_gui():
     # Frame 1 content
     canvas1 = Canvas(
         frame1,
-        bg="#2F2F2F",  # Ustawienie tła canvas na ciemny szary
+        bg="#2F2F2F",
         height=1080,
         width=1920,
         bd=0,
@@ -212,7 +222,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame0, button_1_frame1, button_2_frame1),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="gray",
         activeforeground="gray"
@@ -233,7 +243,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame1, button_1_frame1, button_2_frame1),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -254,7 +264,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: show_frame(frame2),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -275,7 +285,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: show_frame(frame3),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -296,7 +306,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: show_frame(frame4),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -317,7 +327,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: show_frame(frame5),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -338,7 +348,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: show_frame(frame6),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -359,7 +369,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: show_frame(frame7),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -380,7 +390,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: show_frame(frame8),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -395,7 +405,7 @@ def start_gui():
     # Frame 2 content
     canvas2 = Canvas(
         frame2,
-        bg="#2F2F2F",  # Ustawienie tła canvas na ciemny szary
+        bg="#2F2F2F",
         height=1080,
         width=1920,
         bd=0,
@@ -413,7 +423,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame0, button_1_frame2, button_2_frame2),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="gray",
         activeforeground="gray"
@@ -434,7 +444,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame1, button_1_frame2, button_2_frame2),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -449,15 +459,15 @@ def start_gui():
     image_image_6 = PhotoImage(
         file=relative_to_assets("Utwor_1.png", 2))
     image_6 = canvas2.create_image(
-        960.0,  # X-coordinate for the center of the window
-        540.0,  # Y-coordinate for the center of the window
+        960.0,
+        540.0,
         image=image_image_6
     )
 
     # Frame 3 content
     canvas3 = Canvas(
         frame3,
-        bg="#2F2F2F",  # Ustawienie tła canvas na ciemny szary
+        bg="#2F2F2F",
         height=1080,
         width=1920,
         bd=0,
@@ -475,7 +485,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame0, button_1_frame3, button_2_frame3),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="gray",
         activeforeground="gray"
@@ -496,7 +506,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame1, button_1_frame3, button_2_frame3),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -511,15 +521,15 @@ def start_gui():
     image_image_7 = PhotoImage(
         file=relative_to_assets("Utwor_2.png", 3))
     image_7 = canvas3.create_image(
-        960.0,  # X-coordinate for the center of the window
-        540.0,  # Y-coordinate for the center of the window
+        960.0,
+        540.0,
         image=image_image_7
     )
 
     # Frame 4 content
     canvas4 = Canvas(
         frame4,
-        bg="#2F2F2F",  # Ustawienie tła canvas na ciemny szary
+        bg="#2F2F2F",
         height=1080,
         width=1920,
         bd=0,
@@ -537,7 +547,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame0, button_1_frame4, button_2_frame4),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="gray",
         activeforeground="gray"
@@ -558,7 +568,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame1, button_1_frame4, button_2_frame4),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -573,15 +583,15 @@ def start_gui():
     image_image_8 = PhotoImage(
         file=relative_to_assets("Utwor_3.png", 4))
     image_8 = canvas4.create_image(
-        960.0,  # X-coordinate for the center of the window
-        540.0,  # Y-coordinate for the center of the window
+        960.0,
+        540.0,
         image=image_image_8
     )
 
     # Frame 5 content
     canvas5 = Canvas(
         frame5,
-        bg="#2F2F2F",  # Ustawienie tła canvas na ciemny szary
+        bg="#2F2F2F",
         height=1080,
         width=1920,
         bd=0,
@@ -599,7 +609,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame0, button_1_frame5, button_2_frame5),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="gray",
         activeforeground="gray"
@@ -620,7 +630,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame1, button_1_frame5, button_2_frame5),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -635,15 +645,15 @@ def start_gui():
     image_image_9 = PhotoImage(
         file=relative_to_assets("Utwor_4.png", 5))
     image_9 = canvas5.create_image(
-        960.0,  # X-coordinate for the center of the window
-        540.0,  # Y-coordinate for the center of the window
+        960.0,
+        540.0,
         image=image_image_9
     )
 
     # Frame 6 content
     canvas6 = Canvas(
         frame6,
-        bg="#2F2F2F",  # Ustawienie tła canvas na ciemny szary
+        bg="#2F2F2F",
         height=1080,
         width=1920,
         bd=0,
@@ -661,7 +671,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame0, button_1_frame6, button_2_frame6),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="gray",
         activeforeground="gray"
@@ -682,7 +692,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame1, button_1_frame6, button_2_frame6),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -697,15 +707,15 @@ def start_gui():
     image_image_10 = PhotoImage(
         file=relative_to_assets("Utwor_5.png", 6))
     image_10 = canvas6.create_image(
-        960.0,  # X-coordinate for the center of the window
-        540.0,  # Y-coordinate for the center of the window
+        960.0,
+        540.0,
         image=image_image_10
     )
 
     # Frame 7 content
     canvas7 = Canvas(
         frame7,
-        bg="#2F2F2F",  # Ustawienie tła canvas na ciemny szary
+        bg="#2F2F2F",
         height=1080,
         width=1920,
         bd=0,
@@ -723,7 +733,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame0, button_1_frame7, button_2_frame7),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="gray",
         activeforeground="gray"
@@ -744,7 +754,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame1, button_1_frame7, button_2_frame7),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -759,15 +769,15 @@ def start_gui():
     image_image_11 = PhotoImage(
         file=relative_to_assets("Utwor_6.png", 7))
     image_11 = canvas7.create_image(
-        960.0,  # X-coordinate for the center of the window
-        540.0,  # Y-coordinate for the center of the window
+        960.0,
+        540.0,
         image=image_image_11
     )
 
     # Frame 8 content
     canvas8 = Canvas(
         frame8,
-        bg="#2F2F2F",  # Ustawienie tła canvas na ciemny szary
+        bg="#2F2F2F",
         height=1080,
         width=1920,
         bd=0,
@@ -785,7 +795,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame0, button_1_frame8, button_2_frame8),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="gray",
         activeforeground="gray"
@@ -806,7 +816,7 @@ def start_gui():
         highlightthickness=0,
         command=lambda: switch_frame_and_color(frame1, button_1_frame8, button_2_frame8),
         relief="flat",
-        bg="#2F2F2F",  # Ustawienie tła przycisku na ciemny szary
+        bg="#2F2F2F",
         activebackground="#2F2F2F",
         fg="black",
         activeforeground="black"
@@ -821,11 +831,10 @@ def start_gui():
     image_image_12 = PhotoImage(
         file=relative_to_assets("Utwor_7.png", 8))
     image_12 = canvas8.create_image(
-        960.0,  # X-coordinate for the center of the window
-        540.0,  # Y-coordinate for the center of the window
+        960.0,
+        540.0,
         image=image_image_12
     )
-
 
     show_frame(frame0)
     window.resizable(False, False)
