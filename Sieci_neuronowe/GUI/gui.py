@@ -83,6 +83,13 @@ def switch_frame_and_color(target_frame, button_active, button_inactive):
 
 def start_gui():
     global window, canvas0, image_2, image_3_id, image_gryf_id, image_image_2, image_image_3, image_image_gryf, image_image_5
+    global button_image_1_frame0, button_image_2_frame0, button_image_1_frame1, button_image_2_frame1, button_image_1_frame2
+    global button_image_2_frame2, button_image_1_frame3, button_image_2_frame3, button_image_1_frame4, button_image_2_frame4
+    global button_image_1_frame5, button_image_2_frame5, button_image_1_frame6, button_image_2_frame6, button_image_1_frame7
+    global button_image_2_frame7, button_image_1_frame8, button_image_2_frame8
+    global button_image_3, button_image_4, button_image_5, button_image_6, button_image_7, button_image_8, button_image_9
+    global image_image_6, image_image_7, image_image_8, image_image_9, image_image_10, image_image_11, image_image_12
+
     window = Tk()
     window.geometry("1920x1080")
     window.configure(bg="#2F2F2F")  # Ustawienie tła okna na ciemny szary
