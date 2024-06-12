@@ -1,5 +1,6 @@
 from pathlib import Path
 from tkinter import Tk, Canvas, Button, PhotoImage, Frame
+from threading import Event
 
 OUTPUT_PATH = Path(__file__).parent
 ASSETS_PATH_FRAME0 = OUTPUT_PATH / Path(r"assets/frame0")
@@ -81,6 +82,15 @@ def switch_frame_and_color(target_frame, button_active, button_inactive):
     button_active.config(fg="black", activeforeground="black")
     button_inactive.config(fg="gray", activeforeground="gray")
 
+toggle_state = Event()
+def toggle_mic():
+    if toggle_state.is_set():
+        toggle_state.clear()
+        print("Mic state: 0")
+    else:
+        toggle_state.set()
+        print("Mic state: 1")
+
 def start_gui():
     global window, canvas0, image_2, image_3_id, image_gryf_id, image_image_2, image_image_3, image_image_gryf, image_image_5
     global button_image_1_frame0, button_image_2_frame0, button_image_1_frame1, button_image_2_frame1, button_image_1_frame2
@@ -147,7 +157,7 @@ def start_gui():
         image=button_microphone_frame0,
         borderwidth=0,
         highlightthickness=0,
-        #command=,
+        command=toggle_mic,
         relief="flat",
         bg="#2F2F2F",
         activebackground="#2F2F2F",

@@ -5,8 +5,9 @@ from tensorflow.keras.models import load_model
 import librosa
 import librosa.feature
 import threading
+import time
 from queue import Queue
-from Sieci_neuronowe.GUI.gui import update_chord_image, start_gui
+from Sieci_neuronowe.GUI.gui import update_chord_image, start_gui, toggle_state
 
 chord_label = None
 MODEL_PATH = "model.h5"
@@ -15,11 +16,13 @@ DATA_PATH = "data.json"
 with open(DATA_PATH, "r") as file:
     data = json.load(file)
 
+
 def calculate_pcp(audio_data, sr):
     chroma = librosa.feature.chroma_stft(y=audio_data, sr=sr)
     chroma_norm = librosa.util.normalize(chroma)
     pcp = np.mean(chroma_norm, axis=1)
     return pcp
+
 
 def classify_buffer(buffer, rate, queue):
     audio_data = np.frombuffer(buffer, dtype=np.int16).astype(np.float32) / np.iinfo(np.int16).max
@@ -33,6 +36,7 @@ def classify_buffer(buffer, rate, queue):
         print(f"Identified chord: {chord} with confidence: {confidence}")
         queue.put(chord)
 
+
 def list_microphones():
     p = pyaudio.PyAudio()
     info = p.get_host_api_info_by_index(0)
@@ -42,10 +46,12 @@ def list_microphones():
             print("Input Device id ", i, " - ", p.get_device_info_by_index(i).get('name'))
     p.terminate()
 
+
 def select_microphone():
     list_microphones()
     index = int(input("Wybierz indeks urządzenia do używania: "))
     return index
+
 
 def record_and_classify(mic_index, queue):
     FORMAT = pyaudio.paInt16
@@ -61,13 +67,26 @@ def record_and_classify(mic_index, queue):
                     frames_per_buffer=CHUNK,
                     input_device_index=mic_index)
     print("* Recording and classifying...")
-    for _ in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-        buffer = stream.read(CHUNK, exception_on_overflow=False)
-        classify_buffer(buffer, RATE, queue)
-    print("* Done.")
-    stream.stop_stream()
-    stream.close()
-    p.terminate()
+    try:
+        while toggle_state.is_set():
+            buffer = stream.read(CHUNK, exception_on_overflow=False)
+            classify_buffer(buffer, RATE, queue)
+    except Exception as e:
+        print(f"Recording error: {e}")
+    finally:
+        print("* Done.")
+        stream.stop_stream()
+        stream.close()
+        p.terminate()
+
+
+def start_recording(mic_index, queue):
+    if toggle_state.is_set():
+        recording_thread = threading.Thread(target=record_and_classify, args=(mic_index, queue))
+        recording_thread.start()
+    else:
+        print("Recording is not started because toggle_state is not set.")
+
 
 def process_queue(queue):
     try:
@@ -78,19 +97,31 @@ def process_queue(queue):
         pass
     window.after(100, process_queue, queue)
 
+
 if __name__ == "__main__":
     mic_index = select_microphone()
-    input("Press Enter to start GUI and recording...")
+    input("Press Enter to start GUI...")
 
     # Utwórz kolejkę
     queue = Queue()
-
-    # Uruchomienie klasyfikacji w osobnym wątku
-    classify_thread = threading.Thread(target=record_and_classify, args=(mic_index, queue), daemon=True)
-    classify_thread.start()
 
     # Uruchomienie GUI
     global window
     window = start_gui()
     window.after(100, process_queue, queue)
+
+
+    # Uruchomienie monitorowania stanu toggle_state i nagrywania
+    def monitor_toggle_state():
+        while True:
+            if toggle_state.is_set():
+                start_recording(mic_index, queue)
+                while toggle_state.is_set():
+                    time.sleep(0.1)
+            time.sleep(0.1)
+
+
+    monitor_thread = threading.Thread(target=monitor_toggle_state, daemon=True)
+    monitor_thread.start()
+
     window.mainloop()
