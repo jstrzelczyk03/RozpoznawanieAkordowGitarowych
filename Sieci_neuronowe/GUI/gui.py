@@ -12,6 +12,7 @@ ASSETS_PATH_FRAME5 = OUTPUT_PATH / Path(r"assets/frame5")
 ASSETS_PATH_FRAME6 = OUTPUT_PATH / Path(r"assets/frame6")
 ASSETS_PATH_FRAME7 = OUTPUT_PATH / Path(r"assets/frame7")
 ASSETS_PATH_FRAME8 = OUTPUT_PATH / Path(r"assets/frame8")
+
 def relative_to_assets(path: str, frame: int) -> Path:
     if frame == 0:
         return ASSETS_PATH_FRAME0 / Path(path)
@@ -68,7 +69,7 @@ def update_chord_image(chord):
     text_image_file = chord_images.get(chord, "Text.png")
     text_image_path = relative_to_assets(text_image_file, 0)
     new_text_image = PhotoImage(file=text_image_path)
-    canvas0.itemconfig(image_3_id, image=new_text_image)
+    canvas0.itemconfig(image_text_id, image=new_text_image)
     canvas0.image = new_text_image
 
     gryf_image_file = gryf_images.get(chord, "Gryf.png")
@@ -83,22 +84,25 @@ def switch_frame_and_color(target_frame, button_active, button_inactive):
     button_inactive.config(fg="gray", activeforeground="gray")
 
 toggle_state = Event()
-def toggle_mic():
+def toggle_mic(canvas, image_id, image_on, image_off):
     if toggle_state.is_set():
         toggle_state.clear()
+        canvas.itemconfig(image_id, image=image_off)
         print("Mic state: 0")
     else:
         toggle_state.set()
+        canvas.itemconfig(image_id, image=image_on)
         print("Mic state: 1")
 
 def start_gui():
-    global window, canvas0, image_2, image_3_id, image_gryf_id, image_image_2, image_image_3, image_image_gryf, image_image_5
+    global window, canvas0, image_2, image_text_id, image_gryf_id, image_image_2, image_image_text, image_image_gryf, image_image_5
     global button_image_1_frame0, button_image_2_frame0, button_image_1_frame1, button_image_2_frame1, button_image_1_frame2
     global button_image_2_frame2, button_image_1_frame3, button_image_2_frame3, button_image_1_frame4, button_image_2_frame4
     global button_image_1_frame5, button_image_2_frame5, button_image_1_frame6, button_image_2_frame6, button_image_1_frame7
     global button_image_2_frame7, button_image_1_frame8, button_image_2_frame8, button_microphone_frame0
     global button_image_3, button_image_4, button_image_5, button_image_6, button_image_7, button_image_8, button_image_9
     global image_image_6, image_image_7, image_image_8, image_image_9, image_image_10, image_image_11, image_image_12
+    global image_image_on, image_image_off, image_id
 
     window = Tk()
     window.geometry("1920x1080")
@@ -117,6 +121,8 @@ def start_gui():
     for frame in (frame0, frame1, frame2, frame3, frame4, frame5, frame6, frame7, frame8):
         frame.place(x=0, y=0, width=1920, height=1080)
 
+
+
     # Frame 0 content
     canvas0 = Canvas(
         frame0,
@@ -129,18 +135,15 @@ def start_gui():
     )
     canvas0.place(x=0, y=0)
 
-    image_image_2 = PhotoImage(file=relative_to_assets("Signal_ON.png", 0))
-    image_2 = canvas0.create_image(
-        1100.0,
-        600.0,
-        image=image_image_2
-    )
+    image_image_on = PhotoImage(file=relative_to_assets("Signal_ON.png", 0))
+    image_image_off = PhotoImage(file=relative_to_assets("Signal_OFF.png", 0))
+    image_id = canvas0.create_image(1100.0, 600.0, image=image_image_off)
 
-    image_image_3 = PhotoImage(file=relative_to_assets("Text.png", 0))
-    image_3_id = canvas0.create_image(
+    image_image_text = PhotoImage(file=relative_to_assets("Text.png", 0))
+    image_text_id = canvas0.create_image(
         960.0,
         290.0,
-        image=image_image_3
+        image=image_image_text
     )
 
     image_image_gryf = PhotoImage(file=relative_to_assets("Gryf.png", 0))
@@ -157,7 +160,7 @@ def start_gui():
         image=button_microphone_frame0,
         borderwidth=0,
         highlightthickness=0,
-        command=toggle_mic,
+        command=lambda: toggle_mic(canvas0, image_id, image_image_on, image_image_off),
         relief="flat",
         bg="#2F2F2F",
         activebackground="#2F2F2F",
