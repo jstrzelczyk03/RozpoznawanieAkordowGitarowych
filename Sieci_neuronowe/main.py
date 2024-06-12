@@ -16,13 +16,11 @@ DATA_PATH = "data.json"
 with open(DATA_PATH, "r") as file:
     data = json.load(file)
 
-
 def calculate_pcp(audio_data, sr):
     chroma = librosa.feature.chroma_stft(y=audio_data, sr=sr)
     chroma_norm = librosa.util.normalize(chroma)
     pcp = np.mean(chroma_norm, axis=1)
     return pcp
-
 
 def classify_buffer(buffer, rate, queue):
     audio_data = np.frombuffer(buffer, dtype=np.int16).astype(np.float32) / np.iinfo(np.int16).max
@@ -36,7 +34,6 @@ def classify_buffer(buffer, rate, queue):
         print(f"Identified chord: {chord} with confidence: {confidence}")
         queue.put(chord)
 
-
 def list_microphones():
     p = pyaudio.PyAudio()
     info = p.get_host_api_info_by_index(0)
@@ -46,19 +43,16 @@ def list_microphones():
             print("Input Device id ", i, " - ", p.get_device_info_by_index(i).get('name'))
     p.terminate()
 
-
 def select_microphone():
     list_microphones()
     index = int(input("Wybierz indeks urządzenia do używania: "))
     return index
-
 
 def record_and_classify(mic_index, queue):
     FORMAT = pyaudio.paInt16
     CHANNELS = 1
     RATE = 44100
     CHUNK = 16000
-    RECORD_SECONDS = 80
     p = pyaudio.PyAudio()
     stream = p.open(format=FORMAT,
                     channels=CHANNELS,
@@ -79,14 +73,12 @@ def record_and_classify(mic_index, queue):
         stream.close()
         p.terminate()
 
-
 def start_recording(mic_index, queue):
     if toggle_state.is_set():
         recording_thread = threading.Thread(target=record_and_classify, args=(mic_index, queue))
         recording_thread.start()
     else:
         print("Recording is not started because toggle_state is not set.")
-
 
 def process_queue(queue):
     try:
@@ -109,7 +101,6 @@ if __name__ == "__main__":
     global window
     window = start_gui()
     window.after(100, process_queue, queue)
-
 
     # Uruchomienie monitorowania stanu toggle_state i nagrywania
     def monitor_toggle_state():
