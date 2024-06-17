@@ -104,7 +104,7 @@ if __name__ == "__main__":
     model.summary()
 
     # Train the model
-    history = model.fit(X_train, y_train, validation_data=(X_validation, y_validation), batch_size=32, epochs=400)
+    history = model.fit(X_train, y_train, validation_data=(X_validation, y_validation), batch_size=32, epochs=300)
 
     # Plot accuracy and loss
     plot_history(history)
